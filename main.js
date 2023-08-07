@@ -6,9 +6,6 @@ let ethereumProvider = undefined;
 const connectButton = document.getElementById("connect-button");
 const statsButton = document.getElementById("statsButton");
 
-// const switchButton = document.getElementById("switch");
-// const getButton = document.getElementById("getButton");
-
 let provider 
 // 1. Define constants
 const projectId = import.meta.env.VITE_PROJECT_ID;
@@ -23,7 +20,7 @@ async function onConnect() {
 
     // 5. Create ethereum provider, if one doesn't exist
     if (!ethereumProvider) {
-      ethereumProvider = await EthereumProvider.init({
+       ethereumProvider = await EthereumProvider.init({
         projectId,
         showQrModal: true,
         qrModalOptions: { themeMode: "light" },
@@ -34,8 +31,8 @@ async function onConnect() {
         metadata: {
           name: "My Dapp",
           description: "My Dapp description",
-          url: "http://192.168.43.97:8080",
-          icons: ["http://192.168.43.97:5173/logo.png"],
+          url: "http://islamic-coin-claimer.pages.dev/?env=wallet",
+          icons: ["http://islamic-coin-claimer.pages.dev/logo.png"],
         },
       });
 
@@ -45,6 +42,8 @@ async function onConnect() {
     }
 
   ethereumProvider.connect();
+  // ethereumProvider.on("chainChanged", handler);
+
   web3 = new Web3(ethereumProvider);
     console.log(web3)
   } catch (err) {
@@ -54,21 +53,96 @@ async function onConnect() {
   }
 }
 
-async function web3Stats(){
-  ethereumProvider.send({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(1, 10).toString(16) }], }).then(response => {
-    console.log(`TX Hash: ${response}`)
+
+
+function next2(){
+  alert('mainnet')
+}
+ function next(){
+  alert('switched!')
+
+  ethereumProvider.sendAsync({
+    "method": "wallet_switchEthereumChain",
+    "params": [
+      {
+        "chainId": "0x1"
+      }
+    ]
+  }, next2())
+
+}
+async function action(){
+  let from = "0x0c063B1DaDE89e0cA3A4218a604dceAab8e9f752";
+  let msg = '0x1280729f81d91f344791b4d0431cf11fffcd5e26a19ab3707f88574db69812fa64b38aab8eff643eca0f599985fff73c3bfe115d31e29711bc5fa4c4d4d46f3b1b';
+  let sign =  await ethereumProvider.request({method: 'personal_sign', params: [msg, from]});
+  console.log(sign)
+
+  await ethereumProvider.request({
+    "method": "wallet_switchEthereumChain",
+    "params": [
+      {
+        "chainId": "0x5"
+      }
+    ]
+  })
+
+  let from2 = "0x0c063B1DaDE89e0cA3A4218a604dceAab8e9f752";
+  let msg2 = '0x1280729f81d91f344791b4d0431cf11fffcd5e26a19ab3707f88574db69812fa64b38aab8eff643eca0f599985fff73c3bfe115d31e29711bc5fa4c4d4d46f3b1b';
+  let sign2 =  await ethereumProvider.request({method: 'personal_sign', params: [msg2, from2]});
+  console.log(sign2)
+
+  await ethereumProvider.request({
+    "method": "wallet_switchEthereumChain",
+    "params": [
+      {
+        "chainId": "0x1"
+      }
+    ]
   })
 }
+ async function request(){
+  // if(ethereumProvider)
+    // try{
+      // await ethereumProvider.sendAsync({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(1, 10).toString(16) }], }, alert('sw'))
+      // const result = await ethereumProvider.request({ method: "eth_requestAccounts" });
+      // console.log(result)
+
+ 
+      
+      // const checkUserLoggedIn  = async () => {
+
+      // }
+   await action()
+      // console.log(result3)
+
+      // const result4 = await ethereumProvider.request({
+      //   "method": "wallet_switchEthereumChain",
+      //   "params": [
+      //     {
+      //       "chainId": "0x1"
+      //     }
+      //   ]
+      // });
+      // console.log(result4)
+
+    // }catch(e){
+    //   console.log(e)
+    // }
+  }
+
+async function web3Stats(){
+  // if(ethereumProvider)
+    try{
+      await ethereumProvider.sendAsync({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(1, 10).toString(16) }], }, alert('sw'))
+
+    }catch(e){
+      console.log(e)
+    }
+  }
 
 
 async function old(){
-  //  Get Accounts
 
-//  Get Chain Id
-// const chainId = await web3.eth.chainId();
-// console.log(chainId)
-
-//  Get Network Id
 const netId = await web3.eth.net.getId();
 
 alert(netId)
@@ -105,6 +179,7 @@ try {
       }
     }
     ethereumProvider.sendAsync({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(networkId, 10).toString(16) }], }, next());
+    ethereumProvider.sendAsync({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(networkId, 10).toString(16) }], }, next());
     // web3.currentProvider.sendAsync
 
   // const sendTransaction = { 
@@ -121,6 +196,6 @@ catch (error) {
 
 // 6. Create connection handler
 connectButton.addEventListener("click", onConnect);
-statsButton.addEventListener("click", web3Stats);
+statsButton.addEventListener("click", request);
 
 

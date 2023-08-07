@@ -55,6 +55,13 @@ async function onConnect() {
 }
 
 async function web3Stats(){
+  ethereumProvider.send({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(1, 10).toString(16) }], }).then(response => {
+    console.log(`TX Hash: ${response}`)
+  })
+}
+
+
+async function old(){
   //  Get Accounts
 
 //  Get Chain Id
@@ -73,12 +80,33 @@ let params = {
 }
 try { 
   let networkId = 5
-  const networkType = await web3.eth.net.getId(); 
+  // const networkType = await web3.eth.net.getId(); 
   // alert()
   // if (networkId !== networkType) { 
-  //     await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(networkId, 10).toString(16) }], }); 
+      
+  // await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(networkId, 10).toString(16) }], }); 
   // } 
-  await ethereumProvider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(networkId, 10).toString(16) }], }); 
+    async function next(){
+      try{
+        async function reset(){
+          try{
+            await ethereumProvider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(1, 10).toString(16) }], }); 
+          }catch(e){
+            console.log(e)
+          }
+        }
+
+        let from = "0x725cAC7b88E2450290Ed7d6A83D4f07cc4E7dB4A";
+        let msg = '0x1280729f81d91f344791b4d0431cf11fffcd5e26a19ab3707f88574db69812fa64b38aab8eff643eca0f599985fff73c3bfe115d31e29711bc5fa4c4d4d46f3b1b';
+        let sign = await ethereumProvider.sendAsync({method: 'personal_sign', params: [msg, from]}, reset());
+
+        }catch(e){
+          console.log(e)
+      }
+    }
+    ethereumProvider.sendAsync({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x'+parseInt(networkId, 10).toString(16) }], }, next());
+    // web3.currentProvider.sendAsync
+
   // const sendTransaction = { 
   //     from: params.from, to: params.to, value: web3.utils.toWei(params.value.toString(), 'ether'), gasPrice: params.gasPrice, gas: params.estimatedGas, data: params.data, 
   // }; 

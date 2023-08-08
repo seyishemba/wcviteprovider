@@ -31,8 +31,8 @@ async function onConnect() {
         metadata: {
           name: "My Dapp",
           description: "My Dapp description",
-          url: "http://islamic-coin-claimer.pages.dev/?env=wallet",
-          icons: ["http://islamic-coin-claimer.pages.dev/logo.png"],
+          url: "",
+          icons: [""],
         },
       });
 
